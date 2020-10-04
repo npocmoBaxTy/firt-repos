@@ -126,9 +126,13 @@ todoList.addEventListener("click", (e) => {
                 todos.splice(i, 1);
                 count.innerHTML = `${todos.length}`;
             }
+            if(todos.length ===0) {
+                completeTodos.length =0;
+                localStorage.setItem('completeTodos',JSON.stringify(completeTodos))
+            }
         });
         localStorage.setItem("todos", JSON.stringify(todos));
-        renderTodos(todos);
+        renderTodos(todos)
     }
 });
 
@@ -169,6 +173,7 @@ clearBtn.addEventListener('click',(e)=> {
    </li>
 	`
 	count.innerHTML = `${todos.length}`;
+    localStorage.setItem('completeTodos','[]');
 })
 
 
@@ -179,6 +184,10 @@ const completeLink = document.querySelector('#complete'),
 completeLink.addEventListener('click',(e)=> {
 	e.preventDefault();
 	count.innerHTML = getCompleteTodos().length;
+    todoList.innerHTML = `
+    <li class="notodo">
+            <span>No todos. please add</span>
+    </li>`
 	renderTodos(getCompleteTodos());
 })
 
