@@ -1,23 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta cahrset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="Content-Type" content="text/html;charset=windows-1251" />
-	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
-	<meta http-equiv="X-UA-Compatible" content="device-width" />
-
-	<link rel="stylesheet" href="style.css"/>
-	<title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>TodoList</title>
 </head>
 <body>
-	<script src="https://kit.fontawesome.com/9ad04bd1b1.js"></script>
-	<div class="wrapper">
-		<div class="header"></div>
-		<div class="main"></div>
-		<div class="footer"></div>
-	</div>
+    <script src="https://kit.fontawesome.com/9ad04bd1b1.js"></script>
+    <div class="container">
+        <div class="todolist">
+            <div class="todolist-header">
+                <h1><a href="index.html">todos</a></h1>
+            </div>
+            <div class="todolist-body">
+                <form action="#" class='todo-form'>
+                    <input type="text" placeholder="What needs to be done?" class="todo-input">
+                </form>
+                <ul class="todolist-ul">
+                
+                </ul>
+                <ul class="completetodolist-ul"></ul>
+                 <div class="items">
+                     <span id="todo-count">
+                         <div class="count-wrapper"></div>
+                         Items Left
+                     </span>
+                     <button type="button" class="clear_btn">Clear</button>
+                 </div>
 
-	<script src="script.js"></script>
+            </div>
+                 <div class="tabs">
+                    <a href="#" class="tab-link" id="complete">Completed</a>
+                    <a href="#" class="tab-link" id='Uncompleted'>Uncompleted</a>
+                    <a href="#" class="tab-link" id='all'>All</a>
+                </div>
+        </div>
+    </div>
+    <!-- <script src="app.js"></script> -->
+    <script src='script.js'></script>
 </body>
 </html>
