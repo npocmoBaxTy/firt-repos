@@ -6,8 +6,6 @@ const todoInput = document.querySelector(".todo-input"),
 const count = document.querySelector('.count-wrapper');
 
 let todos = [];
-let completeTodos = [];
-let uncompleteTodos = [];
 if (!localStorage.getItem("todos")) {
     localStorage.setItem("todos", "[]");
 }
@@ -19,10 +17,6 @@ if (localStorage.getItem("todos")) {
 
 function getTodos() {
     return JSON.parse(localStorage.getItem('todos'));
-}
-
-function getCompleteTodos() {
-	return JSON.parse(localStorage.getItem('completeTodos'));
 }
 
 if (JSON.parse(localStorage.getItem("todos")).length === 0) {
@@ -42,6 +36,7 @@ function noTodos() {
         `;
     }
 }
+
    count.innerHTML = `${todos.length}`;
 todoForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -49,6 +44,7 @@ todoForm.addEventListener("submit", (e) => {
         name: todoInput.value,
         complete: false,
     };
+
      if (!todo.name.trim()) {
             todoForm.reset()
             todoInput.focus();
@@ -63,11 +59,12 @@ todoForm.addEventListener("submit", (e) => {
 });
 
 function todosHtml(todo, i) {
+    todo.id = `item_${i}`;
     return `
 		<li>
          <input type="checkbox" value="${i}" id='item_${i}' class="check" ${todo.complete ? "checked" : ""}>
          <input type="text" class="todolist-hidden" style="display:none" value="${todo.name}" data-id="item_${i}">
-         <label for="item_${i}" data-id = ${i} class="${todo.complete ? "active" : ""}">${todo.name}</label>
+         <label for="item_${i}" data-id = item_${i} class="${todo.complete ? "active" : ""}">${todo.name}</label>
          <i class="fas fa-pencil-alt edit"></i>
          <button data-id="item_${i}" type="button" class="todolist-delete">x</button>
       </li>
@@ -97,26 +94,11 @@ todoList.addEventListener("click", (e) => {
             todo.complete = !todo.complete;
             forLabel.classList.toggle("active");
             localStorage.setItem("todos", JSON.stringify(todos));
-            completeTodos.unshift(todo)
-            filterTodos();
         }
     });
     localStorage.setItem("todos", JSON.stringify(todos));
     }
 });
-
-
-function filterTodos() {
-	const todos = getTodos();
-	completeTodos = todos.filter(todo=>todo.complete);
-	localStorage.setItem('completeTodos',JSON.stringify(completeTodos));
-}
-
-function filterUncompleteTodos() {
-	const todos = getTodos();
-	uncompleteTodos = todos.filter(todo=>!todo.complete);
-	localStorage.setItem('uncompleteTodos',JSON.stringify(uncompleteTodos));
-}
 
 
 todoList.addEventListener("click", (e) => {
@@ -126,16 +108,11 @@ todoList.addEventListener("click", (e) => {
                 todos.splice(i, 1);
                 count.innerHTML = `${todos.length}`;
             }
-            if(todos.length ===0) {
-                completeTodos.length =0;
-                localStorage.setItem('completeTodos',JSON.stringify(completeTodos))
-            }
         });
         localStorage.setItem("todos", JSON.stringify(todos));
         renderTodos(todos)
     }
 });
-
 
 
 todoList.addEventListener('click',(e)=> {
@@ -145,10 +122,25 @@ todoList.addEventListener('click',(e)=> {
 		hiddenInput.style.display = 'block';
 		label.style.display = 'none';
 		hiddenInput.focus();
+        hiddenInput.addEventListener('keyup',(e)=> {
+            if(e.keyCode === 13) {
+                label.innerHTML = e.target.value;
+                hiddenInput.style.display = 'none';
+                label.style.display = 'block';
+                const todos = getTodos();
+                todos.forEach(todo=> {
+                if(e.target.dataset.id === todo.id) {
+                    todo.name = e.target.value;
+                    localStorage.setItem('todos',JSON.stringify(todos));
+                }
+            })
+            }
+        });
 		e.target.style.opacity = 0;
-
 	}
 })
+
+
 todoList.addEventListener('blur',(e)=> {
 	if(e.target.closest('.todolist-hidden')) {
 		const label = e.target.nextElementSibling;
@@ -173,7 +165,6 @@ clearBtn.addEventListener('click',(e)=> {
    </li>
 	`
 	count.innerHTML = `${todos.length}`;
-    localStorage.setItem('completeTodos','[]');
 })
 
 
@@ -183,12 +174,9 @@ const completeLink = document.querySelector('#complete'),
 
 completeLink.addEventListener('click',(e)=> {
 	e.preventDefault();
-	count.innerHTML = getCompleteTodos().length;
-    todoList.innerHTML = `
-    <li class="notodo">
-            <span>No todos. please add</span>
-    </li>`
-	renderTodos(getCompleteTodos());
+    const todos = getTodos().filter(todo=> todo.complete);
+    renderTodos(todos);
+    count.innerHTML = todos.length
 })
 
 all.addEventListener('click',(e)=> {
@@ -199,5 +187,8 @@ all.addEventListener('click',(e)=> {
 
 uncompleteLink.addEventListener('click',(e)=> {
 	e.preventDefault();
+    const todos = getTodos().filter(todo=>!todo.complete);
+    renderTodos(todos);
+    count.innerHTML = todos.length
 
 })
